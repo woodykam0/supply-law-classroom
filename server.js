@@ -102,12 +102,13 @@ function sendJson(res, status, obj) {
   res.end(body);
 }
 
-const MIME = { '.html': 'text/html; charset=utf-8' };
+const MIME = { '.html': 'text/html; charset=utf-8', '.js': 'application/javascript; charset=utf-8' };
 function serveStatic(pathname, res) {
   let rel = decodeURIComponent(pathname);
   if (rel === '/' || rel === '\\') rel = '/index.html';
-  if (rel !== '/index.html') { res.writeHead(404, { 'content-type': 'text/plain; charset=utf-8' }); res.end('找不到頁面。'); return; } // 只公開 index.html
-  const filePath = path.join(__dirname, 'index.html');
+  const allowed = new Set(['/index.html', '/supply-script.js']);
+  if (!allowed.has(rel)) { res.writeHead(404, { 'content-type': 'text/plain; charset=utf-8' }); res.end('找不到頁面。'); return; }
+  const filePath = path.join(__dirname, rel.slice(1));
   fs.readFile(filePath, (err, buf) => {
     if (err) { res.writeHead(404, { 'content-type': 'text/plain; charset=utf-8' }); res.end('找不到頁面。'); return; }
     res.writeHead(200, { 'content-type': MIME[path.extname(filePath).toLowerCase()] || 'application/octet-stream', 'cache-control': 'no-store' });
