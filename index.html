@@ -81,7 +81,7 @@
   function record(p){return p&&state.records[rid(p)]}
   function people(){return Object.values(state.records)}
   function blankRecord(p){return{className:p.className,id:p.id,name:p.name,supply:null,m1Invalid:false,m1Reversed:false,m2:{attempts:[0,0,0,0],firstCorrect:[null,null,null,null],wrong:[0,0,0,0],complete:false,explores:0,firstTryAll:null},m3:{levels:[false,false,false],wrong:[0,0,0],correct:[0,0,0]}}}
-  const $=id=>document.getElementById(id);let state=loadState(),role='student',teacherLogged=false,studentStage=1,teacherStage=1,selectedPoint=-1,curveShown=false,excludeReversed=false,m3Stage=1,consecutiveWrong=0,toastTimer,cloudTimer=null,refreshTimer=null,eventStream=null;
+  const $=id=>document.getElementById(id);let state=loadState(),role='student',teacherLogged=false,studentStage=1,teacherStage=1,selectedPoint=-1,curveShown=false,excludeReversed=false,m3Stage=1,consecutiveWrong=0,toastTimer,cloudTimer=null,pollTimer=null,refreshTimer=null,eventStream=null;
   function cacheState(){try{localStorage.setItem(KEY,JSON.stringify(state))}catch(e){}}
   function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
   function showToast(text){const t=$('toast');t.textContent=text;t.classList.remove('hidden');clearTimeout(toastTimer);toastTimer=setTimeout(()=>t.classList.add('hidden'),3200)}
