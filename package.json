@@ -1,0 +1,12 @@
+{
+  "name": "market-equilibrium-classroom",
+  "version": "1.0.0",
+  "private": true,
+  "description": "市場均衡與供需調整｜課堂互動 — 高中經濟科課堂實驗平台（可供全班同時使用）",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
