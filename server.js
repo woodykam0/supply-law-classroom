@@ -187,3 +187,5 @@ server.listen(PORT, () => {
   console.log(`資料檔案：${DATA_FILE}`);
   if (!TEACHER_PASSWORD) console.warn('⚠️  未設定 TEACHER_PASSWORD，教師控制功能已鎖定。請在 Render → Environment 設定後重新部署。');
 });
+/ /   r e d e p l o y - t r i g g e r :   1 1 / 2 0 / 2 0 2 6   1 0 : 0 5 : 3 9  
+ 
