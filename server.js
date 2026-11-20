@@ -144,10 +144,11 @@ const server = http.createServer(async (req, res) => {
       if (!body || typeof body !== 'object') return sendJson(res, 400, { error: '請求格式錯誤。' });
       const instanceId = String(body.instanceId || 'default').slice(0, 64);
       const data = body.data;
-      if (!data || typeof data !== 'object' || Array.isArray(data) || typeof data.eventType !== 'string' || !data.eventType) {
+      const evType = data.eventType || data.kind;
+      if (!data || typeof data !== 'object' || Array.isArray(data) || typeof evType !== 'string' || !evType) {
         return sendJson(res, 400, { error: '資料格式錯誤。' });
       }
-      if (PROTECTED.has(data.eventType) && !teacherOk(String(req.headers['x-teacher-key'] || ''))) {
+      if (PROTECTED.has(evType) && !teacherOk(String(req.headers['x-teacher-key'] || ''))) {
         return sendJson(res, 403, { error: '教師驗證失效，請重新登入控制台。' });
       }
       const item = { id: crypto.randomUUID(), createdAt: Date.now(), instanceId, data };
