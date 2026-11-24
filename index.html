@@ -274,10 +274,14 @@
     const gained = [0, 1, 2].map(i => rs.reduce((sum, m) => { const v = finalOf(m)[i]; return sum + (Number.isFinite(v) ? v : 0); }, 0));
     const pct = (c, n) => n ? Math.round(c / n * 100) : 0;
     const dens = [submitted[0] * 4, submitted[1] * 1, submitted[2] * 3];
+    const totalCorrect = gained[0] + gained[1] + gained[2];
+    const totalItems = dens[0] + dens[1] + dens[2];
     $('m3Rate1').textContent = pct(gained[0], dens[0]) + '%';
     $('m3Rate2').textContent = pct(gained[1], dens[1]) + '%';
     $('m3Rate3').textContent = pct(gained[2], dens[2]) + '%';
-    $('m3FinalAccuracy').textContent = pct(gained[0] + gained[1] + gained[2], dens[0] + dens[1] + dens[2]) + '%';
+    $('m3FinalAccuracy').textContent = totalItems
+      ? pct(totalCorrect, totalItems) + '%（答對 ' + totalCorrect + ' / ' + totalItems + ' 項）'
+      : '0%';
     const wrong = [0, 0, 0];
     rs.forEach(m => { const w = m.wrong || []; for (let i = 0; i < 3; i++) wrong[i] += (w[i] || 0); });
     const max = Math.max(...wrong);
