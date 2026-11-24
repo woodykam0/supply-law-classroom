@@ -33,7 +33,7 @@
 <div class="grid two-col"><div class="card"><h2>供應表</h2><table class="data-table"><thead><tr><th>價格（Price）</th><th>供應量（Quantity supplied）</th></tr></thead><tbody><tr><td>$50</td><td>1,000 杯</td></tr><tr><td>$30</td><td>600 杯</td></tr><tr><td>$10</td><td>200 杯</td></tr><tr><td>$1</td><td>20 杯</td></tr></tbody></table><div class="status" id="m2PointPrompt">請在圖上點出價格 $50 對應的供應量。</div><div class="feedback" id="m2Feedback" aria-live="polite"></div><div id="m2ExploreInfo" class="status hidden"></div><p class="muted small">這條線上的每一個點，都代表一個價格與供應量的組合。</p></div><div class="card"><h2>座標圖</h2><div id="m2ChartHost"></div></div></div>
 </section>
 <section id="studentModule3" class="stage">
-<div class="module-head"><h1>模組三｜表圖互譯三關</h1><p>根據供應曲線與供應表完成三項任務；答錯可再試一次。</p></div>
+<div class="module-head"><h1>模組三｜表圖互譯三關</h1><p>第一關有兩次提交機會（答錯以紅框標示，可再提交一次）；第二、三關可重複嘗試直到答對。</p></div>
 <div class="progress" id="m3Progress"></div><div id="m3Content" class="card"></div>
 </section>
 <div class="footer"><span class="muted" id="studentFooterStatus">每個模組可依教師開放的進度進行。</span><button class="secondary" id="studentResetModule">重設本模組</button></div>
@@ -56,7 +56,7 @@
 <div class="stat-grid"><div class="stat"><span>四點一次點對率</span><strong id="m2FirstRate">0%</strong></div><div class="stat"><span>完成連線人數</span><strong id="m2Complete">0</strong></div><div class="stat"><span>線上探索總次數</span><strong id="m2ExploreTotal">0</strong></div><div class="stat"><span>平均每人探索次數</span><strong id="m2ExploreAvg">0</strong></div></div><div class="card" style="margin-top:16px"><h2>最常點錯的點</h2><div id="m2Mistakes">目前尚無錯誤記錄。</div></div>
 </section>
 <section id="teacherModule3" class="stage">
-<div class="module-head"><h1>模組三｜三關學習統計</h1><p>每關統計至少完成一次正確作答的學生比例，並列出最常錯的題目。</p></div><div class="stat-grid"><div class="stat"><span>第一關｜圖→表正確率</span><strong id="m3Rate1">0%</strong></div><div class="stat"><span>第二關｜表→圖正確率</span><strong id="m3Rate2">0%</strong></div><div class="stat"><span>第三關｜讀值與解釋正確率</span><strong id="m3Rate3">0%</strong></div><div class="stat"><span>模組三最終填答正確率</span><strong id="m3FinalAccuracy">0%</strong></div><div class="stat"><span>已參與人數</span><strong id="m3Participants">0</strong></div></div><div class="card" style="margin-top:16px"><h2>最常錯的題目</h2><div id="m3CommonWrong">目前尚無錯誤記錄。</div></div>
+<div class="module-head"><h1>模組三｜三關學習統計</h1><p>各關以「第一次提交」的答對題數計算正確率（答對題數 ÷ 總題數）；最終正確率為三關合計，並列出最常錯的關卡。</p></div><div class="stat-grid"><div class="stat"><span>第一關｜圖→表正確率</span><strong id="m3Rate1">0%</strong></div><div class="stat"><span>第二關｜表→圖正確率</span><strong id="m3Rate2">0%</strong></div><div class="stat"><span>第三關｜讀值與解釋正確率</span><strong id="m3Rate3">0%</strong></div><div class="stat"><span>模組三最終填答正確率</span><strong id="m3FinalAccuracy">0%</strong></div><div class="stat"><span>已參與人數</span><strong id="m3Participants">0</strong></div></div><div class="card" style="margin-top:16px"><h2>最常錯的題目</h2><div id="m3CommonWrong">目前尚無錯誤記錄。</div></div>
 </section>
 <div class="footer"><div class="row"><button class="green" id="advanceModule">進入模組二</button><button class="secondary" id="teacherResetModule">重設本模組</button></div><span class="muted small">本頁以線上資料空間同步各裝置；教師密碼僅為介面提示，並非伺服器端權限控管。</span></div>
 </section>
@@ -121,12 +121,169 @@
   function renderM3(){const p=profile(),r=p&&record(p);if(!r)return;m3Before=JSON.stringify(r.m3);const flags=r.m3.levels;$('m3Progress').innerHTML=flags.map((v,i)=>`<span class="pill">第${i+1}關：${v?'已完成':'進行中'}</span>`).join('');const stage=flags.findIndex(v=>!v);m3Stage=stage<0?3:stage+1;renderM3Question()}
   function miniGraph(){const w=620,h=390,d={l:70,t:30,pw:525,ph:300};let s=`<svg class="chart" viewBox="0 0 ${w} ${h}" role="img" aria-label="標有刻度與 A、B、C 點的供應曲線">`;for(let i=0;i<=6;i++){const x=d.l+d.pw*i/6,y=d.t+d.ph-d.ph*i/6;s+=`<line class="gridline" x1="${x}" y1="${d.t}" x2="${x}" y2="${d.t+d.ph}"/><line class="gridline" x1="${d.l}" y1="${y}" x2="${d.l+d.pw}" y2="${y}"/><text x="${x}" y="${d.t+d.ph+22}" text-anchor="middle">${i*200}</text><text x="${d.l-10}" y="${y+4}" text-anchor="end">${i*10}</text>`}const pos=(q,p)=>({x:d.l+q/1200*d.pw,y:d.t+d.ph-p/60*d.ph}),A=pos(1000,50),B=pos(600,30),C=pos(200,10);s+=`<line class="axis" x1="${d.l}" y1="${d.t+d.ph}" x2="${d.l+d.pw}" y2="${d.t+d.ph}"/><line class="axis" x1="${d.l}" y1="${d.t}" x2="${d.l}" y2="${d.t+d.ph}"/><polyline class="curve" points="${A.x},${A.y} ${B.x},${B.y} ${C.x},${C.y}"/><circle class="point" cx="${A.x}" cy="${A.y}" r="8"/><circle class="point" cx="${B.x}" cy="${B.y}" r="8"/><circle class="point" cx="${C.x}" cy="${C.y}" r="8"/><text x="${A.x+10}" y="${A.y-8}" class="point-label">A</text><text x="${B.x+10}" y="${B.y-8}" class="point-label">B</text><text x="${C.x+10}" y="${C.y-8}" class="point-label">C</text><text x="${d.l+d.pw/2}" y="${h-10}" text-anchor="middle">數量 Q（杯）</text><text transform="translate(18 ${d.t+d.ph/2}) rotate(-90)" text-anchor="middle">價格 P（元）</text></svg>`;return s}
   function m3DraftKey(stage){const p=profile();return `supply-law-m3-draft-v1|${p?rid(p):'guest'}|${stage}`}function readM3Draft(stage){try{return JSON.parse(localStorage.getItem(m3DraftKey(stage))||'{}')}catch(e){return {}}}function writeM3Draft(stage,data){try{localStorage.setItem(m3DraftKey(stage),JSON.stringify(data))}catch(e){}}
-  function renderM3Question(){const host=$('m3Content'),p=profile(),r=p&&record(p);if(!r)return;const stage=r.m3.levels.findIndex(v=>!v);if(stage<0){host.innerHTML='<h2>三關完成</h2><div class="status success">你已完成供應定律表圖互譯任務。</div>';return}m3Stage=stage+1;let html='';if(stage===0){html=`<h2>第一關｜圖→表</h2><p>讀取圖上的 A、B、C 點，完成空白表格。</p>${miniGraph()}<div class="table-wrap"><table class="data-table"><thead><tr><th>點</th><th>價格</th><th>供應量</th></tr></thead><tbody><tr><td>A</td><td>$50</td><td>1,000 杯</td></tr><tr><td>B</td><td><input class="answer-input" id="m3p1" inputmode="numeric" aria-label="B點價格"></td><td><input class="answer-input" id="m3q1" inputmode="numeric" aria-label="B點供應量"></td></tr><tr><td>C</td><td><input class="answer-input" id="m3p2" inputmode="numeric" aria-label="C點價格"></td><td><input class="answer-input" id="m3q2" inputmode="numeric" aria-label="C點供應量"></td></tr></tbody></table></div><button id="m3Submit1" class="stage-actions">檢查答案</button><div class="feedback" id="m3FeedbackInline" aria-live="polite"></div>`}else if(stage===1){html=`<h2>第二關｜表→圖</h2><p>根據價格與供應量的對應，選出正確的供應曲線。</p><div class="status">$50→1,000杯；$30→600杯；$10→200杯</div><div class="choice-row"><button class="choice" type="button" data-answer="up">A｜向右上</button><button class="choice" type="button" data-answer="down">B｜向右下</button><button class="choice" type="button" data-answer="flat">C｜水平</button></div><button id="m3Submit2" class="stage-actions">提交答案</button><div class="feedback" id="m3ChoiceFeedback" aria-live="polite"></div>`}else{html=`<h2>第三關｜讀值與解釋</h2>${miniGraph()}<div class="quiz-question"><strong>題1：價格 $30 時，供應量是多少？</strong><div class="row"><input class="answer-input" id="m3q3" inputmode="numeric" style="max-width:220px"><span>杯</span></div><div class="error" id="m3q3Feedback" aria-live="polite"></div></div><div class="quiz-question"><strong>題2：供應量為 600 杯時，價格是多少？</strong><div class="row"><span>$</span><input class="answer-input" id="m3p3" inputmode="numeric" style="max-width:220px"></div><div class="error" id="m3p3Feedback" aria-live="polite"></div></div><div class="quiz-question"><strong>題3：供應定律說明什麼？</strong><div class="choice-row"><button class="choice" type="button" data-answer="more">① 價格越高供應量越多</button><button class="choice" type="button" data-answer="less">② 價格越高供應量越少</button><button class="choice" type="button" data-answer="same">③ 價格與供應量無關</button></div><button id="m3Submit3" class="stage-actions">提交答案</button><div class="feedback" id="m3FinalFeedback" aria-live="polite"></div></div>`}host.innerHTML=html;wireM3(stage)}
+  function renderM3Question(){const host=$('m3Content'),p=profile(),r=p&&record(p);if(!r)return;const stage=r.m3.levels.findIndex(v=>!v);if(stage<0){host.innerHTML='<h2>三關完成</h2><div class="status success">你已完成供應定律表圖互譯任務。</div>';return}m3Stage=stage+1;let html='';if(stage===0){html=`<h2>第一關｜圖→表</h2><p>讀取圖上的 A、B、C 點，完成空白表格。</p>${miniGraph()}<div class="table-wrap"><table class="data-table"><thead><tr><th>點</th><th>價格</th><th>供應量</th></tr></thead><tbody><tr><td>A</td><td>$50</td><td>1,000 杯</td></tr><tr><td>B</td><td><input class="answer-input" id="m3p1" inputmode="numeric" aria-label="B點價格"></td><td><input class="answer-input" id="m3q1" inputmode="numeric" aria-label="B點供應量"></td></tr><tr><td>C</td><td><input class="answer-input" id="m3p2" inputmode="numeric" aria-label="C點價格"></td><td><input class="answer-input" id="m3q2" inputmode="numeric" aria-label="C點供應量"></td></tr></tbody></table></div><button id="m3Submit1" class="stage-actions">檢查答案</button><div class="feedback" id="m3FeedbackInline" aria-live="polite"></div>`}else if(stage===1){html=`<h2>第二關｜表→圖</h2><p>供應曲線的方向是？</p><div class="status">$50→1,000杯；$30→600杯；$10→200杯</div><div class="choice-row"><button class="choice" type="button" data-answer="up">A｜向右上</button><button class="choice" type="button" data-answer="down">B｜向右下</button><button class="choice" type="button" data-answer="flat">C｜水平</button></div><button id="m3Submit2" class="stage-actions">提交答案</button><div class="feedback" id="m3ChoiceFeedback" aria-live="polite"></div>`}else{html=`<h2>第三關｜讀值與解釋</h2>${miniGraph()}<div class="quiz-question"><strong>題1：價格 $30 時，供應量是多少？</strong><div class="row"><input class="answer-input" id="m3q3" inputmode="numeric" style="max-width:220px"><span>杯</span></div><div class="error" id="m3q3Feedback" aria-live="polite"></div></div><div class="quiz-question"><strong>題2：供應量為 200 杯時，價格是多少？</strong><div class="row"><span>$</span><input class="answer-input" id="m3p3" inputmode="numeric" style="max-width:220px"></div><div class="error" id="m3p3Feedback" aria-live="polite"></div></div><div class="quiz-question"><strong>題3：供應定律說明什麼？</strong><div class="choice-row"><button class="choice" type="button" data-answer="more">① 價格越高供應量越多</button><button class="choice" type="button" data-answer="less">② 價格越高供應量越少</button><button class="choice" type="button" data-answer="same">③ 價格與供應量無關</button></div><button id="m3Submit3" class="stage-actions">提交答案</button><div class="feedback" id="m3FinalFeedback" aria-live="polite"></div></div>`}host.innerHTML=html;wireM3(stage)}
   function markInputResult(id,correct,answer,label){const input=$(id),feedback=$(`${id}Feedback`);if(!input)return;input.classList.toggle('answer-correct',correct);input.classList.toggle('answer-wrong',!correct);if(feedback){feedback.textContent=correct?'正確。':`錯誤；正確答案：${label||answer}`;feedback.classList.toggle('error',!correct);feedback.classList.toggle('success-text',correct)}}
   function markWrongM3(stage,msg){const r=record(profile());r.m3.wrong[stage]++;consecutiveWrong++;const extra=consecutiveWrong>=2?' 問問同桌，或舉手讓老師來幫你':'';if(consecutiveWrong>=2)consecutiveWrong=0;const target=$('m3FeedbackInline')||$('m3ChoiceFeedback')||$('m3FinalFeedback');if(target)target.textContent=msg+extra;cacheState();m3Before=JSON.stringify(r.m3);const p=profile(),r2=p&&record(p);if(r2){clearTimeout(cloudTimer);cloudTimer=setTimeout(()=>saveEvent('student',{profile:p,record:JSON.parse(JSON.stringify(r))}),250)}}
   function markCorrectM3(stage){const r=record(profile());r.m3.levels[stage]=true;r.m3.correct[stage]++;consecutiveWrong=0;cacheState();const p=profile(),r2=p&&record(p);if(r2){clearTimeout(cloudTimer);cloudTimer=setTimeout(()=>saveEvent('student',{profile:p,record:JSON.parse(JSON.stringify(r))}),250)}renderM3()}
-  function wireM3(stage){if(stage===0){const ids=['m3p1','m3q1','m3p2','m3q2'],answers=['30','600','10','200'],labels=['$30','600 杯','$10','200 杯'];$('m3Submit1').addEventListener('click',async()=>{const values=ids.map(id=>$(id).value.trim());let all=true;ids.forEach((id,i)=>{const ok=values[i]===answers[i];markInputResult(id,ok,answers[i],labels[i]);if(!ok)all=false});if(all)markCorrectM3(0);else markWrongM3(0,'紅色欄位答錯，請依提示修正後再提交。')})}else if(stage===1){let choice='';document.querySelectorAll('#m3Content [data-answer]').forEach(b=>b.addEventListener('click',()=>{choice=b.dataset.answer;document.querySelectorAll('#m3Content [data-answer]').forEach(x=>x.classList.remove('selected','answer-wrong','answer-correct'));b.classList.add('selected')}));$('m3Submit2').addEventListener('click',()=>{const buttons=[...document.querySelectorAll('#m3Content [data-answer]')];buttons.forEach(x=>{x.classList.toggle('answer-correct',x.dataset.answer==='up');x.classList.toggle('answer-wrong',x.dataset.answer===choice&&choice!=='up')});if(choice==='up')markCorrectM3(1);else markWrongM3(1,'答案錯誤；正確答案：A｜向右上。')})}else{let choice='';document.querySelectorAll('#m3Content [data-answer]').forEach(b=>b.addEventListener('click',()=>{choice=b.dataset.answer;document.querySelectorAll('#m3Content [data-answer]').forEach(x=>x.classList.remove('selected','answer-wrong','answer-correct'));b.classList.add('selected')}));$('m3Submit3').addEventListener('click',()=>{const a=$('m3q3').value.trim(),b=$('m3p3').value.trim(),okA=a==='600',okB=b==='30',okC=choice==='more';markInputResult('m3q3',okA,'600','600 杯');markInputResult('m3p3',okB,'30','$30');document.querySelectorAll('#m3Content [data-answer]').forEach(x=>{x.classList.toggle('answer-correct',x.dataset.answer==='more');x.classList.toggle('answer-wrong',x.dataset.answer===choice&&choice!=='more')});if(okA&&okB&&okC)markCorrectM3(2);else{const errs=[];if(!okA)errs.push('題1正確答案：600 杯');if(!okB)errs.push('題2正確答案：$30');if(!okC)errs.push('題3正確答案：① 價格越高供應量越多');$('m3FinalFeedback').textContent=errs.join('；')+'，請修正後再提交。';cacheState();const p=profile(),r2=p&&record(p);if(r2){clearTimeout(cloudTimer);cloudTimer=setTimeout(()=>saveEvent('student',{profile:p,record:JSON.parse(JSON.stringify(r2))}),250)}}})}}
-  function renderTeacherM3Stats(){const rs=people().map(r=>r.m3).filter(Boolean),participants=rs.filter(r=>r.levels.some(Boolean)).length;$('m3Participants').textContent=participants;const done=[0,0,0];rs.forEach(m=>{if(m.levels[0])done[0]++;if(m.levels[1])done[1]++;if(m.levels[2])done[2]++});const pct=(c,n)=>n?Math.round(c/n*100):0,defn=participants||0;$('m3Rate1').textContent=`${pct(done[0],defn)}%`;$('m3Rate2').textContent=`${pct(done[1],defn)}%`;$('m3Rate3').textContent=`${pct(done[2],defn)}%`;$('m3FinalAccuracy').textContent=`${pct(done[0]+done[1]+done[2],defn*3)}%`;const wrong=[0,0,0];rs.forEach(m=>m.wrong?.forEach((n,i)=>wrong[i]+=n));const max=Math.max(...wrong),names=['第一關：圖→表','第二關：表→圖','第三關：讀值與解釋'];$('m3CommonWrong').textContent=max?`最常錯：${names[wrong.indexOf(max)]}（${max} 次錯誤）`:'目前尚無錯誤記錄。'}
+  function m3save(r) {
+    const p = profile();
+    if (!r || !p) return;
+    cacheState();
+    m3Before = JSON.stringify(r.m3);
+    clearTimeout(cloudTimer);
+    cloudTimer = setTimeout(() => saveEvent('student', { profile: p, record: JSON.parse(JSON.stringify(r)) }), 250);
+  }
+
+  function m3bumpAttempt(r, stage, correctCount) {
+    if (!Array.isArray(r.m3.attempts)) r.m3.attempts = [0, 0, 0];
+    if (!Array.isArray(r.m3.finalCorrect)) r.m3.finalCorrect = [null, null, null];
+    const n = (r.m3.attempts[stage] || 0) + 1;
+    if (n === 1) r.m3.finalCorrect[stage] = correctCount;
+    r.m3.attempts[stage] = n;
+    return n;
+  }
+
+  function m3finish(stage) {
+    const r = record(profile());
+    if (!r) return;
+    r.m3.levels[stage] = true;
+    if (!Array.isArray(r.m3.correct)) r.m3.correct = [0, 0, 0];
+    r.m3.correct[stage] = (r.m3.correct[stage] || 0) + 1;
+    consecutiveWrong = 0;
+    m3save(r);
+    renderM3();
+  }
+
+  function wireM3(stage) {
+    if (stage === 0) {
+      const ids = ['m3p1', 'm3q1', 'm3p2', 'm3q2'];
+      const answers = ['30', '600', '10', '200'];
+      const labels = ['價格 $30', '供應量 600 杯', '價格 $10', '供應量 200 杯'];
+      const btn = $('m3Submit1');
+      if (!btn) return;
+      const rec = record(profile());
+      let revealed = !!(rec && rec.m3 && (rec.m3.attempts[0] || 0) >= 2);
+      if (revealed) btn.textContent = '繼續 → 第 2 關';
+      btn.addEventListener('click', () => {
+        const r = record(profile());
+        if (!r) return;
+        const fb = $('m3FeedbackInline');
+        if (revealed) { m3finish(0); return; }
+        const values = ids.map(id => { const el = $(id); return el ? String(el.value).trim() : ''; });
+        if (values.every(v => v === '')) {
+          if (fb) fb.textContent = '請先填寫 B、C 兩點的價格與供應量，再按「檢查答案」。';
+          return;
+        }
+        const wrongIdx = [];
+        ids.forEach((id, i) => {
+          const ok = values[i] === answers[i];
+          markInputResult(id, ok, answers[i], labels[i]);
+          if (!ok) wrongIdx.push(i);
+        });
+        const n = m3bumpAttempt(r, 0, 4 - wrongIdx.length);
+        if (wrongIdx.length === 0) { m3finish(0); return; }
+        r.m3.wrong[0] = (r.m3.wrong[0] || 0) + 1;
+        if (n >= 2) {
+          revealed = true;
+          if (fb) fb.textContent = '第 2 次提交仍有 ' + wrongIdx.length + ' 題答錯。正確答案：' + wrongIdx.map(i => labels[i]).join('、') + '。按「繼續」前往第 2 關。';
+          btn.textContent = '繼續 → 第 2 關';
+          m3save(r);
+          return;
+        }
+        if (fb) fb.textContent = '第 1 次提交有 ' + wrongIdx.length + ' 題答錯（紅色框），還有 1 次機會，請修正後再提交。';
+        m3save(r);
+      });
+      return;
+    }
+
+    if (stage === 1) {
+      let choice = '';
+      document.querySelectorAll('#m3Content [data-answer]').forEach(b => b.addEventListener('click', () => {
+        choice = b.dataset.answer;
+        document.querySelectorAll('#m3Content [data-answer]').forEach(x => x.classList.remove('selected', 'answer-wrong', 'answer-correct'));
+        b.classList.add('selected');
+      }));
+      const btn = $('m3Submit2');
+      if (!btn) return;
+      btn.addEventListener('click', () => {
+        const r = record(profile());
+        if (!r) return;
+        const fb = $('m3ChoiceFeedback');
+        if (!choice) { if (fb) fb.textContent = '請先選擇一個答案再提交。'; return; }
+        const ok = choice === 'up';
+        document.querySelectorAll('#m3Content [data-answer]').forEach(x => {
+          x.classList.toggle('answer-correct', x.dataset.answer === 'up');
+          x.classList.toggle('answer-wrong', x.dataset.answer === choice && choice !== 'up');
+        });
+        m3bumpAttempt(r, 1, ok ? 1 : 0);
+        if (ok) { m3finish(1); return; }
+        r.m3.wrong[1] = (r.m3.wrong[1] || 0) + 1;
+        if (fb) fb.textContent = '答案錯誤；正確答案：A｜向右上。請再試一次。';
+        m3save(r);
+      });
+      return;
+    }
+
+    let choice = '';
+    document.querySelectorAll('#m3Content [data-answer]').forEach(b => b.addEventListener('click', () => {
+      choice = b.dataset.answer;
+      document.querySelectorAll('#m3Content [data-answer]').forEach(x => x.classList.remove('selected', 'answer-wrong', 'answer-correct'));
+      b.classList.add('selected');
+    }));
+    const btn = $('m3Submit3');
+    if (!btn) return;
+    btn.addEventListener('click', () => {
+      const r = record(profile());
+      if (!r) return;
+      const aEl = $('m3q3'), bEl = $('m3p3');
+      const a = aEl ? String(aEl.value).trim() : '';
+      const b = bEl ? String(bEl.value).trim() : '';
+      if (a === '' && b === '' && !choice) {
+        const fb0 = $('m3FinalFeedback');
+        if (fb0) fb0.textContent = '請先完成三題再提交。';
+        return;
+      }
+      const okA = a === '600', okB = b === '10', okC = choice === 'more';
+      markInputResult('m3q3', okA, '600', '600 杯');
+      markInputResult('m3p3', okB, '10', '$10');
+      document.querySelectorAll('#m3Content [data-answer]').forEach(x => {
+        x.classList.toggle('answer-correct', x.dataset.answer === 'more');
+        x.classList.toggle('answer-wrong', x.dataset.answer === choice && choice !== 'more');
+      });
+      const correctCount = (okA ? 1 : 0) + (okB ? 1 : 0) + (okC ? 1 : 0);
+      m3bumpAttempt(r, 2, correctCount);
+      if (correctCount === 3) { m3finish(2); return; }
+      r.m3.wrong[2] = (r.m3.wrong[2] || 0) + 1;
+      const errs = [];
+      if (!okA) errs.push('題1正確答案：600 杯');
+      if (!okB) errs.push('題2正確答案：$10');
+      if (!okC) errs.push('題3正確答案：① 價格越高供應量越多');
+      const fb = $('m3FinalFeedback');
+      if (fb) fb.textContent = errs.join('；') + '，請修正後再提交。';
+      m3save(r);
+    });
+  }
+
+  function renderTeacherM3Stats() {
+    const rs = people().map(r => r.m3).filter(Boolean);
+    const attemptsOf = m => Array.isArray(m.attempts) ? m.attempts : [0, 0, 0];
+    const finalOf = m => Array.isArray(m.finalCorrect) ? m.finalCorrect : [null, null, null];
+    const participants = rs.filter(m => attemptsOf(m).some(n => (n || 0) > 0) || (m.levels || []).some(Boolean)).length;
+    $('m3Participants').textContent = participants;
+    const submitted = [0, 1, 2].map(i => rs.filter(m => (attemptsOf(m)[i] || 0) > 0).length);
+    const gained = [0, 1, 2].map(i => rs.reduce((sum, m) => { const v = finalOf(m)[i]; return sum + (Number.isFinite(v) ? v : 0); }, 0));
+    const pct = (c, n) => n ? Math.round(c / n * 100) : 0;
+    const dens = [submitted[0] * 4, submitted[1] * 1, submitted[2] * 3];
+    $('m3Rate1').textContent = pct(gained[0], dens[0]) + '%';
+    $('m3Rate2').textContent = pct(gained[1], dens[1]) + '%';
+    $('m3Rate3').textContent = pct(gained[2], dens[2]) + '%';
+    $('m3FinalAccuracy').textContent = pct(gained[0] + gained[1] + gained[2], dens[0] + dens[1] + dens[2]) + '%';
+    const wrong = [0, 0, 0];
+    rs.forEach(m => { const w = m.wrong || []; for (let i = 0; i < 3; i++) wrong[i] += (w[i] || 0); });
+    const max = Math.max(...wrong);
+    const names = ['第一關：圖→表', '第二關：表→圖', '第三關：讀值與解釋'];
+    $('m3CommonWrong').textContent = max ? `最常錯：${names[wrong.indexOf(max)]}（${max} 次錯誤）` : '目前尚無錯誤記錄。';
+  }
   function enterTeacher(){role='teacher';if(teacherLogged){setView('teacherView');renderTeacherStage()}else setView('teacherLogin')}
   async function login(){const pw=$('teacherPassword').value;try{const r=await apiFetch('/api/teacher/verify',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({password:pw})});if(!r||!r.ok){$('loginError').textContent='密碼不正確，請再試一次。';$('teacherPassword').value='';return}sessionStorage.setItem(KEY+':teacher','1');sessionStorage.setItem(KEY+':teacherKey',pw);teacherLogged=true;teacherStage=1;setView('teacherView');renderTeacherStage();$('loginError').textContent='';try{await queryAll();renderTeacherStage()}catch{}}catch{$('loginError').textContent='密碼不正確，請再試一次。';$('teacherPassword').value=''}}
   async function advance(){if(state.activeModule<3){state.activeModule++;try{await saveEvent('settings',{activeModule:state.activeModule,m1Curve:state.m1Curve});renderTeacherStage();showToast(`已開放${moduleName(state.activeModule)}，學生可自行進入。`)}catch(e){state.activeModule--;showToast(e.message||'同步失敗，請重試。')}}}
